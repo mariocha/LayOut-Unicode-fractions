@@ -252,8 +252,8 @@ module MarioChabot
           puts "    ⚠️  Layer: #{e.message}"
         end
 
-        # Add to page's entity collection
-        page.entities.add(overlay_text)
+        # Add to page's entity collection using Ruby push operator
+        page.entities << overlay_text
         puts "    ✓ Overlay ajouté à la page"
 
         return true
