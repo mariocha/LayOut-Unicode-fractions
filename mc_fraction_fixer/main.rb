@@ -252,9 +252,9 @@ module MarioChabot
           puts "    ⚠️  Layer: #{e.message}"
         end
 
-        # Add to document on specific page
-        doc.add_entity(overlay_text, page)
-        puts "    ✓ Overlay ajouté au document"
+        # Add to page's entity collection
+        page.entities.add(overlay_text)
+        puts "    ✓ Overlay ajouté à la page"
 
         return true
 
