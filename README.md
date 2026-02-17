@@ -25,9 +25,38 @@ A SketchUp extension that converts text fractions (like `1/2`, `3/4`, `7/8`) int
 | 2/5  | ⅖       | 3/5  | ⅗       |
 | 4/5  | ⅘       |      |         |
 
+## 📥 Download
+
+### Option 1: Download ZIP (Easiest)
+1. Go to https://github.com/mariocha/LayOut-Unicode-fractions
+2. Click the green **Code** button
+3. Select **Download ZIP**
+4. Extract the ZIP file to a temporary location
+5. You'll find the needed files inside the extracted folder
+
+### Option 2: Download Individual Files
+1. **Download `mc_fraction_fixer.rb`:**
+   - Go to https://github.com/mariocha/LayOut-Unicode-fractions/blob/main/mc_fraction_fixer.rb
+   - Click the **Raw** button (or right-click → Save As)
+   - Save the file to your computer
+
+2. **Download `main.rb`:**
+   - Go to https://github.com/mariocha/LayOut-Unicode-fractions/blob/main/mc_fraction_fixer/main.rb
+   - Click the **Raw** button (or right-click → Save As)
+   - Save the file to your computer
+   - **Important:** Keep the folder structure! Create a folder named `mc_fraction_fixer` and put `main.rb` inside it
+
+### Option 3: Git Clone (Advanced)
+```bash
+git clone https://github.com/mariocha/LayOut-Unicode-fractions.git
+```
+
 ## 📦 Installation
 
-1. Download or clone this repository
+1. After downloading (see above), you need these files:
+   - `mc_fraction_fixer.rb`
+   - `mc_fraction_fixer/main.rb`
+
 2. Copy the following into your SketchUp Plugins folder:
    ```
    Plugins/
@@ -35,9 +64,15 @@ A SketchUp extension that converts text fractions (like `1/2`, `3/4`, `7/8`) int
    └── mc_fraction_fixer/
        └── main.rb
    ```
+
 3. **Plugins folder location:**
    - **Windows:** `C:\Users\<username>\AppData\Roaming\SketchUp\SketchUp 2026\SketchUp\Plugins\`
    - **macOS:** `~/Library/Application Support/SketchUp 2026/SketchUp/Plugins/`
+   
+   **Note:** On Windows, the `AppData` folder is hidden by default. To show it:
+   - Open File Explorer
+   - Click **View** → **Show** → **Hidden items**
+
 4. Restart SketchUp
 
 ## 🚀 Usage
