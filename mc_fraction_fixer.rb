@@ -6,7 +6,7 @@
 require 'sketchup.rb'
 require 'extensions.rb'
 
-module MarioChabot
+module MarioCha
   module FractionFixer
 
     unless file_loaded?(__FILE__)
