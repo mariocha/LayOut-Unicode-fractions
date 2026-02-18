@@ -3,7 +3,7 @@
 require 'sketchup.rb'
 require 'fileutils'
 
-module MarioChacet
+module MarioCha
   module FractionFixer
 
     VERSION = '2.6.0'
@@ -310,4 +310,4 @@ module MarioChacet
   end
 end
 
-puts "✅ Fraction Fixer v#{MarioChacet::FractionFixer::VERSION} chargé"
+puts "✅ Fraction Fixer v#{MarioCha::FractionFixer::VERSION} chargé"
