@@ -253,7 +253,7 @@ module MarioChacet
         end
 
         # Add to document on specific page
-        doc.add_entity(overlay_text, page)
+        doc.add_entity(overlay_text, layer, page)
         puts "    ✓ Overlay ajouté au document"
 
         return true
