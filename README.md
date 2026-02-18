@@ -3,6 +3,7 @@
 **Version 2.6.0** — by Mario Chabot
 
 A SketchUp extension that converts text fractions (like `1/2`, `3/4`, `7/8`) into their Unicode equivalents (`½`, `¾`, `⅞`) in LayOut documents.
+(still needs work wrt vertical dimensions)
 
 ## ✨ Features
 
