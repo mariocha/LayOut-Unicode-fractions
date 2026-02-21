@@ -1,7 +1,7 @@
 # mc_fraction_fixer.rb
 # Fraction Fixer - Convertit les fractions LayOut en Unicode
 # Par Mario Chabot - 2026
-# Version 2.6.0
+# Version 1.0
 
 require 'sketchup.rb'
 require 'extensions.rb'
