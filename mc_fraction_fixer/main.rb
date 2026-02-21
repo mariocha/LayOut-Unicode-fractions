@@ -1,4 +1,4 @@
-# Fraction Fixer v2.6.0 - Fixed: Use doc.add_entity()
+# Fraction Fixer v1.0 - Fixed: Use doc.add_entity()
 
 require 'sketchup.rb'
 require 'fileutils'
@@ -229,18 +229,17 @@ module MarioCha
 
         # Create FormattedText with converted text and bounds
         overlay_text = Layout::FormattedText.new(converted_text, text_bounds)
-
         puts "    ✓ FormattedText créé"
 
-        # Copy style from dimension text
-        begin
-          if text_obj.respond_to?(:style) && overlay_text.respond_to?(:style=)
-            overlay_text.style = text_obj.style
-            puts "    ✓ Style copié"
-          end
-        rescue => e
-          puts "    ⚠️  Style: #{e.message}"
-        end
+        # Add to page's entity collection
+#        page.entities.add(overlay_text)
+				otext = doc.add_entity(overlay_text, layer, page)
+				ostyle = otext.style
+				ostyle.solid_filled = true
+				ostyle.fill_color = Sketchup::Color.new(250, 250, 250, 250)
+				otext.style = ostyle
+
+       puts "    ✓ Overlay ajouté à la page"
 
         # Assign to overlay layer
         begin
@@ -251,10 +250,6 @@ module MarioCha
         rescue => e
           puts "    ⚠️  Layer: #{e.message}"
         end
-
-        # Add to document on specific page
-        doc.add_entity(overlay_text, layer, page)
-        puts "    ✓ Overlay ajouté au document"
 
         return true
 
