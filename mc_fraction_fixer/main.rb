@@ -1,4 +1,4 @@
-# Fraction Fixer v2.6.0 - Fixed: Use doc.add_entity()
+# Fraction Fixer v2.0 - Fixed: adds dimensions on paper space
 
 require 'sketchup.rb'
 require 'fileutils'
