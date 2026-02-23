@@ -1,4 +1,4 @@
-# Fraction Fixer v1.0 - Fixed: Use doc.add_entity()
+# Fraction Fixer v2.6.0 - Fixed: Use doc.add_entity()
 
 require 'sketchup.rb'
 require 'fileutils'
@@ -60,12 +60,12 @@ module MarioCha
 
       create_overlays = (result == IDYES)
 
-      puts "\n" + "=" * 60
-      puts "FRACTION FIXER v#{VERSION}"
-      puts "=" * 60
-      puts "Fichier: #{File.basename(path)}"
-      puts "Mode: #{create_overlays ? 'OVERLAYS + TEXTES' : 'TEXTES SEULEMENT'}"
-      puts "=" * 60
+#      puts "\n" + "=" * 60
+#      puts "FRACTION FIXER v#{VERSION}"
+#      puts "=" * 60
+#      puts "Fichier: #{File.basename(path)}"
+#      puts "Mode: #{create_overlays ? 'OVERLAYS + TEXTES' : 'TEXTES SEULEMENT'}"
+#      puts "=" * 60
 
       UI.start_timer(0.1, false) { process_layout_document(path, create_overlays) }
     end
@@ -77,7 +77,7 @@ module MarioCha
       created_overlays = 0
       errors = []
 
-      begin
+			begin
         output_path = original_path.sub(/\.layout$/i, '_UNICODE.layout')
 
         # Copy original to preserve it
@@ -128,47 +128,80 @@ module MarioCha
               end
             end
 
-            # Dimensions - create overlays
-            if create_overlays &&
-               (entity.is_a?(Layout::LinearDimension) || entity.is_a?(Layout::AngularDimension))
-              begin
-                text_obj = entity.text
-                display_text = nil
+# Dimensions → create real dimension overlays
+if create_overlays &&
+   (entity.is_a?(Layout::LinearDimension) || entity.is_a?(Layout::AngularDimension))
 
-                if text_obj.respond_to?(:display_text)
-                  display_text = text_obj.display_text.to_s
-                end
+  begin
+    text_obj = entity.text
+    next unless text_obj.respond_to?(:display_text)
 
-                next if display_text.nil? || display_text.empty? || display_text == '<>'
-                next unless contains_fraction?(display_text)
+    display_text = text_obj.display_text.to_s
 
-                # Convert and create overlay
-                converted = convert_fractions(display_text)
-                puts "  → Dimension: '#{display_text}' → '#{converted}'"
+    # Skip auto text without value or already custom
+    next if display_text.empty? || display_text == '<>'
+    next unless contains_fraction?(display_text)
 
-                success = create_overlay_text(doc, page, text_obj, converted, overlay_layer)
+    converted = convert_fractions(display_text)
+    next if converted == display_text
 
-                if success
-                  created_overlays += 1
-                end
+    # 🚫 avoid recreating if already converted
+#    next if dimension_overlay_exists?(page, entity, converted)
 
-              rescue => e
-                errors << "Dimension: #{e.message}"
-                puts "    ⚠️  Erreur: #{e.message}"
-              end
-            end
+		vec_conn   = entity.end_connection_point - entity.start_connection_point
+		vec_extent = entity.start_extent_point   - entity.start_connection_point
+		height = entity.start_connection_point.distance(entity.start_extent_point)
 
-          end
-        end
+	# 2D cross product sign (paper space)
+		cross = vec_conn.x * vec_extent.y - vec_conn.y * vec_extent.x
+		height = -height if cross > 0
+
+	# 1️⃣
+		new_dim = Layout::LinearDimension.new(
+		entity.start_connection_point,
+		entity.end_connection_point,
+		height
+		)
+    # 2️⃣ override paper text value   No work yet
+
+    # 3️⃣ add to document on overlay layer
+    added = doc.add_entity(new_dim, overlay_layer, page)
+		added.text.grow_mode = 0
+    added.custom_text = true
+puts  "custom text is #{added.custom_text?}"
+#   added.disconnect
+
+puts   added
+puts   added.text
+puts   added.text.class
+puts   added.text.plain_text
+		   added.text.plain_text = '888' #converted.to_s
+
+    # 4️⃣ optional background (same visual as your text overlays)
+    style = added.text.style
+    style.solid_filled = true
+    style.fill_color = Sketchup::Color.new(200, 240, 200, 240)
+		added.text.style = style
+
+    created_overlays += 1
+
+  rescue => e
+    errors << "Dimension: #{e.message}"
+    puts "    ⚠️  Dimension error: #{e.message}"
+  end
+end
+
+		end
+	end
 
         total = converted_labels + converted_texts + created_overlays
 
-        puts "\n" + "=" * 60
-        puts "RÉSULTATS:"
-        puts "  Labels:   #{converted_labels}"
-        puts "  Textes:   #{converted_texts}"
-        puts "  Overlays: #{created_overlays}" if create_overlays
-        puts "=" * 60
+       puts "\n" + "=" * 60
+       puts "RÉSULTATS:"
+       puts "  Labels:   #{converted_labels}"
+       puts "  Textes:   #{converted_texts}"
+	   puts "  Overlays: #{created_overlays}" if create_overlays
+    	puts "=" * 60
 
         if total > 0
           message_parts = ["✅ Conversion réussie!\n"]
@@ -202,8 +235,8 @@ module MarioCha
         puts e.backtrace.first(5).join("\n")
       end
 
-      puts "\n" + "=" * 60
-    end
+#      puts "\n" + "=" * 60
+		end
 
     def self.find_or_create_layer(doc, layer_name)
       doc.layers.each do |layer|
@@ -222,24 +255,24 @@ module MarioCha
         upper_left = bounds.upper_left
         lower_right = bounds.lower_right
 
-        puts "    Bounds: UL(#{upper_left.x.round(2)}, #{upper_left.y.round(2)}) LR(#{lower_right.x.round(2)}, #{lower_right.y.round(2)})"
+ #       puts "    Bounds: UL(#{upper_left.x.round(2)}, #{upper_left.y.round(2)}) LR(#{lower_right.x.round(2)}, #{lower_right.y.round(2)})"
 
         # Create new bounds
         text_bounds = Geom::Bounds2d.new(upper_left, lower_right)
 
         # Create FormattedText with converted text and bounds
         overlay_text = Layout::FormattedText.new(converted_text, text_bounds)
-        puts "    ✓ FormattedText créé"
+			  overlay_text.grow_mode = 0
+#        puts "    ✓ FormattedText créé"
 
-        # Add to page's entity collection
-#        page.entities.add(overlay_text)
+        # Add to entity collection
 				otext = doc.add_entity(overlay_text, layer, page)
 				ostyle = otext.style
-				ostyle.solid_filled = true
-				ostyle.fill_color = Sketchup::Color.new(250, 250, 250, 250)
+				ostyle.solid_filled = (true)
+				ostyle.fill_color = Sketchup::Color.new(240, 250, 240, 250)
 				otext.style = ostyle
 
-       puts "    ✓ Overlay ajouté à la page"
+#       puts "    ✓ Overlay ajouté à la page"
 
         # Assign to overlay layer
         begin
@@ -305,4 +338,4 @@ module MarioCha
   end
 end
 
-puts "✅ Fraction Fixer v#{MarioCha::FractionFixer::VERSION} chargé"
+puts "✅ Fraction Fixer v#{ MarioCha::FractionFixer::VERSION } chargé"
