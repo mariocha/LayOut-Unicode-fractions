@@ -165,17 +165,21 @@ if create_overlays &&
     # 2️⃣ override paper text value   No work yet
 
     # 3️⃣ add to document on overlay layer
-    added = doc.add_entity(new_dim, overlay_layer, page)
-		added.text.grow_mode = 0
-    added.custom_text = true
-puts  "custom text is #{added.custom_text?}"
-#   added.disconnect
+    oDim = doc.add_entity(new_dim, overlay_layer, page)
+		oDim.text.grow_mode = 0
+    oDim.custom_text = true
+#puts  "custom text is #{oDim.custom_text?}"
+   oDim.disconnect
 
-puts   added
-puts   added.text
-puts   added.text.class
-puts   added.text.plain_text
-		   added.text.plain_text = '888' #converted.to_s
+#puts   oDim
+#puts   oDim.text #<Layout::FormattedText:0x000000014bba48d8>
+puts   oDim.text.class #Layout::FormattedText
+#puts   oDim.text.display_text.class #string
+#puts   oDim.text.display_text.length #5
+#puts   oDim.text.display_text
+
+bounds = oDim.text.bounds
+oDim.text = Layout::FormattedText.new(converted, bounds)
 
     # 4️⃣ optional background (same visual as your text overlays)
     style = added.text.style
