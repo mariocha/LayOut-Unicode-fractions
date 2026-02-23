@@ -3,14 +3,13 @@
 **Version 1.0** — by Mario Chabot
 
 A SketchUp extension that converts text fractions (like `1/2`, `3/4`, `7/8`) into their Unicode equivalents (`½`, `¾`, `⅞`) in LayOut documents.
-TODO: vertical dimensions text is horizontal, rotation ?
-      fine tuning of overlay position. 
-      unicode char is too small, size has to be increased
+TODO: Code for dimensions, line 174 to 184, does not work. API says dimension.text, but no work. plain_text does retreive the dimension text.
+      Unicode char is too small, size has to be increased
 
 ## ✨ Features
 - **Labels** — direct in-place conversion
 - **Text boxes** (FormattedText) — direct in-place conversion
-- **Dimensions** — creates Unicode overlay text on a dedicated layer
+- **Dimensions** — creates Unicode overlay dim on a dedicated layer. (not yet)
 - **Original file preserved** — saves output as `_UNICODE.layout`
 - **Overlay layer** — "Fractions Unicode" layer for dimension overlays (toggle on/off)
 
