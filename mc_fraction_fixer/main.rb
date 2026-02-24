@@ -133,17 +133,18 @@ if create_overlays &&
    (entity.is_a?(Layout::LinearDimension) || entity.is_a?(Layout::AngularDimension))
 
   begin
+    initstyle = entity.style
     text_obj = entity.text
     next unless text_obj.respond_to?(:display_text)
 
-    display_text = text_obj.display_text.to_s
+    displ_text = text_obj.display_text.to_s
 
     # Skip auto text without value or already custom
-    next if display_text.empty? || display_text == '<>'
-    next unless contains_fraction?(display_text)
+    next if displ_text.empty? || displ_text == '<>'
+    next unless contains_fraction?(displ_text)
 
-    converted = convert_fractions(display_text)
-    next if converted == display_text
+    converted = convert_fractions(displ_text)
+    next if converted == displ_text
 
     # 🚫 avoid recreating if already converted
 #    next if dimension_overlay_exists?(page, entity, converted)
@@ -166,26 +167,24 @@ if create_overlays &&
 
     # 3️⃣ add to document on overlay layer
     oDim = doc.add_entity(new_dim, overlay_layer, page)
-		oDim.text.grow_mode = 0
+	oDim.text.grow_mode = 0
     oDim.custom_text = true
 #puts  "custom text is #{oDim.custom_text?}"
    oDim.disconnect
 
 #puts   oDim
 #puts   oDim.text #<Layout::FormattedText:0x000000014bba48d8>
-puts   oDim.text.class #Layout::FormattedText
+#puts   oDim.text.class #Layout::FormattedText
 #puts   oDim.text.display_text.class #string
 #puts   oDim.text.display_text.length #5
 #puts   oDim.text.display_text
+#oDim.text.plain_text = converted.to_s   # no work !
 
 bounds = oDim.text.bounds
 oDim.text = Layout::FormattedText.new(converted, bounds)
 
-    # 4️⃣ optional background (same visual as your text overlays)
-    style = added.text.style
-    style.solid_filled = true
-    style.fill_color = Sketchup::Color.new(200, 240, 200, 240)
-		added.text.style = style
+    # 4️⃣ Apply initial style
+	oDim.style = initstyle
 
     created_overlays += 1
 
@@ -195,8 +194,8 @@ oDim.text = Layout::FormattedText.new(converted, bounds)
   end
 end
 
-		end
 	end
+end
 
         total = converted_labels + converted_texts + created_overlays
 
