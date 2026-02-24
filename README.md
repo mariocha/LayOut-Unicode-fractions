@@ -1,10 +1,11 @@
 # Fraction Fixer for SketchUp LayOut
 
-**Version 2.0** — by Mario Chabot, adding dimensions on paper space
+**Version 2.0** — by Mario Chabot, Adding dimensions on paper space, on own layer.
 
 A SketchUp extension that converts text fractions (like `1/2`, `3/4`, `7/8`) into their Unicode equivalents (`½`, `¾`, `⅞`) in LayOut documents.
-TODO: Code for dimension: to write new text uses Layout::FormattedText.new(converted, bounds)
-      Unicode char is too small, size has to be increased
+Code for dimension: to write new text uses Layout::FormattedText.new(converted, bounds)
+Caveat: API does not permit (yet) to retreive Dimension Line Aligment; so slanted objects horizontal or vertical dims do not stay as such.
+TODO: Unicode char is too small, size has to be increased
 
 ## ✨ Features
 - **Labels** — direct in-place conversion
